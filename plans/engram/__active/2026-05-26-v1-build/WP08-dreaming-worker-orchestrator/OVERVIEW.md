@@ -2,7 +2,7 @@
 name: wp08-dreaming-worker-orchestrator
 title: Dreaming worker + orchestrator
 type: work-package
-stage: spec
+stage: hardened
 severity: HIGH
 created: 2026-05-26
 updated: 2026-05-26
@@ -43,6 +43,19 @@ ZERO LLM calls.
 SPEC refs: §5 (all), §5.4 (state machine), §5.5 (safe/gated), §7.2/§5.4 (merge
 OCC, C12), §9.4 (merge validation), §9.5 (forgetting rails, rollback), §8.3
 (S-05/S-11/S-12 — C6 enforcement).
+
+> **Precondition (OQ-06, resolved):** WP08 is **BLOCKED on a generation-quality
+> spike** before 8b executes — pin a specific local Ollama model and measure its
+> schema-valid pass rate against `dream-output.schema.json` over N seeded
+> generations (target ≥95%). If no local model passes, dreaming defaults to a
+> cloud model (documented cost); CI uses the validated model or recorded
+> fixtures. The original spikes proved only SDK *rejection*, never *generation*.
+>
+> **Resolved OQs folded in:** OQ-02 independent-episode = different `session_id`
+> (8b counterfactual gate) · OQ-03 contradiction = L1 cosine>0.85 ∧ \|Δimp\|>0.3
+> AND L2 shared-subject/≤2-hop (8b connect) · OQ-08 dead-PID→FAILED vs
+> hung→TIMED_OUT, both tested (8a) · OQ-09 keep `min(100,20%)` floor, rationale
+> documented (8c). See plan `OPEN_QUESTIONS.md` Resolution Log.
 
 ## Target Files
 

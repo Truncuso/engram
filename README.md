@@ -31,6 +31,48 @@ intake, plugin host) with **four plugin seams** — retrieval (QMD), graph
 (graphify), LLM (Claude/OpenAI/Ollama), capture (Claude Code) — and a **detached
 worker** for all LLM-heavy dreaming/ingest. A worker crash never touches the core.
 
+## Prerequisites
+
+> Pre-implementation: the commands below are engram's intended operator
+> interface (SPEC §10), not yet shippable. Install/usage will work once the
+> bottom-up build reaches the MCP milestone (M2).
+
+- **Node ≥ 22** (ESM, `strict`).
+- **Disk:** on first indexing, the retrieval engine (QMD) downloads a one-time
+  **~1.28 GB GGUF embedding model** to `~/.cache/qmd/models`. BM25-only recall
+  works without it; full hybrid recall needs it.
+- **Ollama** — required for `memory.ingest` and the graph-extraction path
+  (graphify uses an Ollama backend). Run `ollama serve` with a
+  **structured-output-capable** model available. Dreaming/ingest are unavailable
+  (daemon stays healthy, degraded) until a working model is reachable.
+
+## Install
+
+```sh
+npm install -g engram        # (planned) global CLI + engramd daemon
+engram init                  # scaffold a store: --global (~/.engram) or --project (<repo>/.engram)
+engramd start                # start the always-up daemon (binds MCP on 127.0.0.1)
+```
+
+`engram init` mints a per-agent **bearer token** (stored `0600`, daemon-owned)
+and prints the MCP endpoint + token to wire into your agent's MCP client config.
+Point your MCP client at `http://127.0.0.1:<port>` with
+`Authorization: Bearer <token>`.
+
+## Quick-start (operator)
+
+```sh
+engram status                # daemon health + per-plugin (QMD / graphify / LLM) health
+engram doctor                # integrity check; quarantines broken frontmatter, never crashes
+engram doctor --fix          # repair what it safely can
+```
+
+Memory verbs (`memory.remember` / `recall` / `ingest` / `forget` / `history` /
+`confirm` / `governance_delete`, plus `dream.*`) are issued by your agent over
+MCP — see the 16-verb contract in `docs/engram-SPEC.md` §6.3. The full CLI
+surface (`engram log`, `engram migrate`, `engram install`, `engram backup`,
+`engram dream …`) is specified in SPEC §10.
+
 ## Stack
 
 TypeScript / Node ≥22 (ESM, strict) · `@tobilu/qmd` (in-process retrieval) ·
@@ -46,7 +88,7 @@ src/
   core/        CoreService, Store, Scoring, AppLog, AccessControl, OCC, Orchestrator, Plugin Host
   schemas/     Zod schemas + JSON-schema exports (frontmatter, manifest, dream-output)
   plugins/     retrieval (QMD) · graph (graphify + py/) · llm · capture
-  mcp/         Streamable HTTP MCP server (16 verbs, bearer auth)
+  mcp/         Streamable HTTP MCP server (16 verbs + system/status resource, bearer auth)
   capture/     Claude Code capture hooks + CaptureIntake wiring
   worker/      detached dreaming / ingest worker
   cli/         the `engram` CLI
@@ -54,7 +96,7 @@ docs/          engram-SPEC.md · adr/ · review/ · research/
 tests/         unit · integration · e2e (the SPEC §12.3 success criteria)
 ```
 
-## Development
+## Development (building from source)
 
 ```sh
 nvm use            # Node 22

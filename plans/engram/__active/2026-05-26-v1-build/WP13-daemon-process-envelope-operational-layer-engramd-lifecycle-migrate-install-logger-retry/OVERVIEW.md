@@ -2,7 +2,7 @@
 name: wp13-daemon-process-envelope-operational-layer-engramd-lifecycle-migrate-install-logger-retry
 title: Daemon process envelope + operational layer (engramd lifecycle, migrate, install, logger, retry)
 type: work-package
-stage: spec
+stage: hardened
 severity: HIGH
 created: 2026-05-26
 updated: 2026-05-26

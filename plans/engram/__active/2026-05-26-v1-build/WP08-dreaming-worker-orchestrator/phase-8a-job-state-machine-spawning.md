@@ -40,3 +40,9 @@ spawn; concurrent claims single-flight (no double-spawn).
 PID-reuse hazard: verify the PID belongs to an engram worker (`/proc/<pid>/cmdline`
 Linux, `ps` macOS) before declaring alive. Worker is a no-op stub here; real
 domain logic is 8b. jobs.db schema was created in WP01 phase-2.
+
+OQ-08 (resolved): two distinct terminal paths — **dead-PID → FAILED** (PID-liveness
+check here + the WP13-1 startup crash-recovery scan), **live-but-hung (heartbeat
+stale >5min) → TIMED_OUT** (watchdog). Test both: `kill -9` → FAILED; freeze the
+worker (e.g. SIGSTOP) → TIMED_OUT. SC-11 asserts a terminal *recoverable* state
+(FAILED or TIMED_OUT) + `dream resume` works (see WP11).

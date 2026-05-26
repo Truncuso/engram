@@ -2,7 +2,7 @@
 name: wp12-current-memory-system-removal-9-stage-cutover
 title: Current memory-system removal (9-stage cutover)
 type: work-package
-stage: spec
+stage: hardened
 severity: MEDIUM
 created: 2026-05-26
 updated: 2026-05-26

@@ -889,7 +889,9 @@ token; daemon stores it 0600, owned by the daemon process. Maps to
 
 Default session agent: `{read, write, dream}` scoped to itself.
 
-**Verb table (16 verbs):**
+**Verb table (16 verbs + 1 status resource):** 11 `memory.*` + 5 `dream.*` = 16
+verbs (tools); `system.status` is additionally exposed as the
+`engram://system/status` resource (see SC-17). The table below lists all 17 rows.
 
 | Verb | Params | Returns | Errors | Cap |
 |------|--------|---------|--------|-----|
@@ -940,6 +942,11 @@ Each memory has `scope` (owning agent), `visibility` (`shared|private|hidden`),
 
 - An agent reads: its own memory + everything `shared`.
 - Session-scoped: only same `session`.
+- **Two distinct denial codes** (ADR-0007): `scope-denied` — the caller is
+  outside the target's `scope`/`visibility` (a *target* the caller may not touch);
+  `forbidden` — the caller's token lacks the required *capability* for the verb
+  (e.g. `write`/`govern`). The split lets clients distinguish "wrong target" from
+  "wrong permission"; both are logged to AppLog `mcp_denied` with the reason.
 - **Dreaming output visibility invariant** (S-12): a dream-produced memory
   has visibility ≤ the **least permissive** source. If any input is
   `private`, output is at most `private`. Cross-agent dreaming (v2) cannot

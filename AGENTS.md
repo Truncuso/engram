@@ -36,7 +36,7 @@ non-Claude agents (Codex, Gemini CLI, etc.) working in this repo.
 | `src/schemas/` | Zod schemas + JSON-schema exports (frontmatter, manifest, dream-output) | 1 |
 | `src/plugins/llm/` | LlmPlugin (Vercel AI SDK; Claude/OpenAI/Ollama) | 2 |
 | `src/plugins/retrieval/` | QMD RetrievalPlugin (in-process) | 3 |
-| `src/mcp/` | Streamable HTTP MCP server, bearer auth, 16 verbs | 5 |
+| `src/mcp/` | Streamable HTTP MCP server, bearer auth, 16 verbs + status resource | 5 |
 | `src/capture/` | Claude Code capture hooks + CaptureIntake wiring | 6 |
 | `src/plugins/capture/` | CapturePlugin (install/normalise) | 6 |
 | `src/plugins/graph/` (+ `py/`) | graphify GraphPlugin (subprocess) | 7 |

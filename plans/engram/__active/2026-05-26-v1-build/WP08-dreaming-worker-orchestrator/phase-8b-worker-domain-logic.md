@@ -31,9 +31,9 @@ procedural = 0.3/dormant, 2nd episode promotes (SC-5); planted contradiction →
 |------|------|-------|
 | Worker entry: read staging (verify MAC S-02), checkpoint stages | `src/worker/dream.ts` | TODO |
 | Distill (LlmPlugin structured output vs dream-output schema; derived_from) | `src/worker/distill.ts` | TODO |
-| Connect: related_to links + emergent entities + 2-layer contradiction detect | `src/worker/connect.ts` | TODO |
+| Connect: related_to links + emergent entities + 2-layer contradiction detect — **L1** cosine sim>0.85 (QMD vectors) ∧ \|Δimportance\|>0.3; **L2** shared entity/subject node OR ≤2-hop graphify connection; **both (AND)** → manifest `queue_review`, no edge in v1 (OQ-03) | `src/worker/connect.ts` | TODO |
 | Re-weight importance (floor 0.05, per-run rate limits) | `src/worker/reweight.ts` | TODO |
-| Counterfactual gate for procedural memories | `src/worker/verify-learn.ts` | TODO |
+| Counterfactual gate for procedural memories — promote to active only if corroborated by ≥1 episode with a **different `session_id`** (not `derived_from` the same parent); else `confidence:0.3, dormant` (OQ-02) | `src/worker/verify-learn.ts` | TODO |
 | Manifest writer (§5.3 shape, score_breakdown C4) + git branch | `src/worker/manifest.ts` | TODO |
 | Prompt-injection safety: bodies as untrusted, delimiters, structured-only (S-05) | `src/worker/prompts.ts` | TODO |
 | Integration tests | `tests/integration/dream-worker.test.ts` | TODO |

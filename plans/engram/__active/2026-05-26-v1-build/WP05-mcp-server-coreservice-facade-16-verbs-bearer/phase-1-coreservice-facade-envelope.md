@@ -34,6 +34,13 @@ with `visibility:shared` returns `{ok:true, data:{...}}`.
 
 ## Notes
 
+**Error codes (OQ-07, resolved — ADR-0007):** access-control failures use **two**
+codes — `scope-denied` for scope/visibility violations and **`forbidden` for
+missing capability**. Ratified by ADR-0007 and SPEC §7.1; both are enforced in
+CoreService before any store primitive and logged to AppLog `mcp_denied`. Verb
+handlers (phase-3) mark which verbs can return `forbidden` (capability-gated) vs
+`scope-denied` (target-gated) vs both.
+
 The `CoreService` is the only layer that enforces access control. MCP, CLI, and
 the v2 dashboard are thin adapters that pass an `AgentContext` and unwrap the
 envelope. This phase does NOT wire HTTP — that is phase 2. The facade calls into

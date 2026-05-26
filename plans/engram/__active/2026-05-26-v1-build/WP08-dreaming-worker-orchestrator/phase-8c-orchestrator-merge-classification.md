@@ -44,3 +44,8 @@ FAILED (SC-12).
 Determinism is a security property (S-11): classification is a pure function of
 the manifest diff, never the LLM. This phase needs no worker run — feed crafted
 manifests. Forgetting safety rails (§9.5) enforced here at merge time.
+
+Active-pool floor stays `min(100, 20%·total)` (OQ-09, resolved): the low floor
+for small/new stores is **intended** — the floor is a mass-archive brake for
+*mature* stores, not a young-store freeze (a bootstrap minimum would block early
+dreaming). Document this rationale where the floor is implemented.

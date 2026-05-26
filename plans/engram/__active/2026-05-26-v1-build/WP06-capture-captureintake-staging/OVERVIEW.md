@@ -2,7 +2,7 @@
 name: wp06-capture-captureintake-staging
 title: Capture + CaptureIntake + staging
 type: work-package
-stage: spec
+stage: hardened
 severity: HIGH
 created: 2026-05-26
 updated: 2026-05-26
@@ -68,7 +68,7 @@ S-01 fail-closed, backpressure, capture-fallback 10MB/7d, G2 MAC), §2.3
 
 | ID | Test | Expected Result | Method |
 |----|------|-----------------|--------|
-| W06-1 | Payload containing a planted AWS secret key | Privacy filter strips it; `filter.audit_log` records the strip rule; observation dropped (fail-closed) | integration (SC-4) |
+| W06-1 | Payload containing a planted AWS secret key | Privacy filter **redacts** the key (`‹redacted:aws-key›`) and writes the rest to staging; `filter.audit_log` records rule+layer (OQ-01). A filter-layer *error* drops the whole observation (fail-closed) | integration (SC-4) |
 | W06-2 | CC capture hook fires on `PostToolUse`; engramd is up | Observation appended to `staging/<agent>/<session>.jsonl`; AppLog `capture` event | e2e (SC-4) |
 | W06-3 | Staging JSONL append with fsync; daemon restart | Data survives restart; cursor-bounded drain finds new entries | integration |
 | W06-4 | Staging at capacity (500MB or 10k files) | New observations dropped + logged; emergency dream queued | integration |

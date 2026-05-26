@@ -34,7 +34,7 @@ recallable; grill-with-memory still grills + ADRs, writes via engram.
 
 | Step | File | State |
 |------|------|-------|
-| git commit `.memory/` (backup point) | `dotfiles/claude/.memory/` | TODO |
+| git commit `.memory/` (backup point) **and verify it is restorable** (dry-run `git checkout <hash> -- .memory/` to a temp path + checksum) — this backup is the sole safety net since the 14-day soak is dropped (OQ-10) | `dotfiles/claude/.memory/` | TODO |
 | Migrate 3 facts + 2 daily logs + global facts → engram | engram store | TODO |
 | `qmd collection remove ~/.claude/.memory`; add engram memories/ | qmd | TODO |
 | Remove SessionStart/End memory-hook entries | `~/.claude/hooks/hooks.json` | TODO |

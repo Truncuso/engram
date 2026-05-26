@@ -44,20 +44,20 @@ agent-accessible over MCP (after WP05).
 
 | WP | Title | Severity | Stage | Impact |
 |----|-------|----------|-------|--------|
-| WP13 | Daemon process envelope + operational layer (engramd lifecycle, migrate, install, logger, retry) | HIGH | draft | — |
+| WP13 | Daemon process envelope + operational layer (engramd lifecycle, migrate, install, logger, retry) | HIGH | hardened | — |
 | WP00 | Repo scaffold + tooling baseline | LOW | spec | repo exists; build/test green |
 | WP01 | Core scaffold (store, schemas, AppLog, jobs, OCC, CoreService, doctor, init) | HIGH | spec | **M0** remember→recall (grep) |
 | WP02 | Plugin host + LlmPlugin (Vercel AI SDK) | HIGH | ready | LLM substrate, multi-provider |
 | WP03 | Retrieval plugin (QMD in-process) + stats sidecar | HIGH | ready | relevance + recency source |
 | WP04 | Scoring engine + recall (degradation chain) | HIGH | ready | **M1** full scored recall |
 | WP05 | MCP server + CoreService facade (16 verbs, bearer) | HIGH | ready | **M2** agent-accessible |
-| WP06 | Capture + CaptureIntake + staging | HIGH | spec | sessions → staging |
+| WP06 | Capture + CaptureIntake + staging | HIGH | hardened | sessions → staging |
 | WP07 | Ingest worker (graphify GraphPlugin, Ollama) | MEDIUM | spec | raw → memories |
-| WP08 | Dreaming worker + orchestrator (8a–8d) | HIGH | spec | consolidation + learning |
+| WP08 | Dreaming worker + orchestrator (8a–8d) | HIGH | hardened | consolidation + learning |
 | WP09 | Threat-model hardening (planted-attack tests) | HIGH | ready | 6 CRITICAL mitigations proven |
 | WP10 | Governance + cascade delete | MEDIUM | spec | purge across all stores |
 | WP11 | E2E verification (18 success criteria) | HIGH | ready | SPEC §12.3 automated |
-| WP12 | Current memory-system removal (9-stage cutover) | MEDIUM | spec | clean replacement, no broken state |
+| WP12 | Current memory-system removal (9-stage cutover) | MEDIUM | hardened | clean replacement, no broken state |
 
 ---
 
