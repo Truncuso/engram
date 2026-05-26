@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+# build output
+dist/
+*.tsbuildinfo
+# test / coverage
+coverage/
+.vitest/
+# python (graphify adapter venv, caches)
+__pycache__/
+*.pyc
+.venv/
+src/plugins/graph/py/.venv/
+# engram stores must never be committed (they hold memory + secrets)
+.engram/
+*.engram-store/
+# logs, env, OS
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+# editor
+.idea/
+*.swp

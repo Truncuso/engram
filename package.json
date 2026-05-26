@@ -1,0 +1,39 @@
+{
+  "name": "engram",
+  "version": "0.0.0",
+  "description": "A standalone, principled, self-organizing memory for AI coding agents — with a decoupled dreaming process that consolidates and learns.",
+  "type": "module",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/Truncuso/engram.git" },
+  "engines": { "node": ">=22" },
+  "bin": { "engram": "./dist/cli/index.js" },
+  "exports": { ".": { "import": "./dist/index.js", "types": "./dist/index.d.ts" } },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.98.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@tobilu/qmd": "^2.5.2",
+    "ai": "^6.0.0",
+    "@ai-sdk/openai": "^3.0.0",
+    "ollama-ai-provider-v2": "^3.5.0",
+    "better-sqlite3": "^12.0.0",
+    "ulid": "^3.0.0",
+    "yaml": "^2.0.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.0.0"
+  }
+}
