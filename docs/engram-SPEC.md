@@ -139,7 +139,7 @@ consistency repairs + decisions confirmed by spikes.
   `~/.engram/agent-secrets/<agent-id>.mac`, daemon-written, read by the hook at
   invocation, never in env (§6.1, §8.3).
 
-**Spike findings folded (see `SPIKES.md`):**
+**Spike findings folded (see `docs/research/spikes-2026-05-26.md`):**
 - QMD confirmed as in-process TS library (`@tobilu/qmd@2.5.2`, ESM) — no
   subprocess fallback (§11.1; OQ on QMD transport closed).
 - MCP TS SDK (`@modelcontextprotocol/sdk@1.29`) confirmed: multi-session

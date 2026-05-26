@@ -94,7 +94,7 @@ Milestone M1: the `remember → recall` path is end-to-end and scored.
 
 | ID | Test | Expected Result | Method |
 |----|------|-----------------|--------|
-| T-WP04-01 | SC-2: `remember` a memory with `confidence:0.8, origin:agent-session`; `recall` with matching query | Hit returned; `score.m_v` = `0.85 × (0.8/0.7)` clamped to 1.0; `score.importance`, `score.relevance`, `score.recency`, `score.m_v`, `score.total` all present | Integration test (SPEC §12.3 SC-2) |
+| T-WP04-01 | SC-2: `remember` a memory with `confidence:0.8, origin:agent-session`; `recall` with matching query | Hit returned; `score.m_v` = `0.85 × (0.8/0.7) ≈ 0.971` (≤ 1.0, **no clamp applied**); `score.importance`, `score.relevance`, `score.recency`, `score.m_v`, `score.total` all present | Integration test (SPEC §12.3 SC-2) |
 | T-WP04-02 | C3: compute `m_v` for `origin:self-authored, confidence:0.3` | Result = `0.7 × (0.3/0.5)` = 0.42 | Unit test (`mv.ts`) |
 | T-WP04-03 | C1: `computeMv` for `human-verified` memory with low confidence | Result ≥ 0.95 (floor applied); result for `origin:human, confidence:0.90` = 1.0 (not lowered) | Unit test (`mv.ts`) |
 | T-WP04-04 | C1: `computeMv` for `origin:human, verification_state:human-verified` | Result = 1.0 (base; floor does not lower) | Unit test (`mv.ts`) |

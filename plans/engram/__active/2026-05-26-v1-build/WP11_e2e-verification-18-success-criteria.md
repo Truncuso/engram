@@ -17,6 +17,7 @@ relationships:
   - depends_on: [[wp08-dreaming-worker-orchestrator]]
   - depends_on: [[wp09-threat-model-hardening-planted-attack-tests]]
   - depends_on: [[wp10-governance-cascade-delete]]
+  - depends_on: [[wp13-daemon-process-envelope-operational-layer-engramd-lifecycle-migrate-install-logger-retry]]
 sources: [SRC-01]
 ---
 <!-- Template: WP v2 (frontmatter-first) -->

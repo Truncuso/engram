@@ -23,3 +23,9 @@ src/plugins/graph/py/.venv/
 # editor
 .idea/
 *.swp
+
+# skill-trace: per-session skill/agent trace (do not commit)
+.memory/trace/
+
+# lean-ctx MCP runtime cache (do not commit)
+.lean-ctx/

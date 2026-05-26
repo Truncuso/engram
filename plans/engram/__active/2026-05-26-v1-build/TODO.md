@@ -21,6 +21,7 @@ Mark `[x]` done, `[~]` in-progress. Never delete a completed item. Bump
 
 | WP | Title | Severity | Stage / Next Action |
 |----|-------|----------|---------------------|
+| WP13 | Daemon process envelope + operational layer (engramd lifecycle, migrate, install, logger, retry) | HIGH | draft |
 | WP00 | Repo scaffold + tooling baseline | LOW | spec — execute (lowest risk) |
 | WP01 | Core scaffold (store, schemas, AppLog, jobs, OCC, CoreService, doctor, init) | HIGH | spec — human gate spec→hardened; blocks everything |
 | WP02 | Plugin host + LlmPlugin (Vercel AI SDK) | HIGH | ready — re-state Spike-1b claim (OQ-06) before exec |

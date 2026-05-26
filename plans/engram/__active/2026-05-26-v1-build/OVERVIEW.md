@@ -44,6 +44,7 @@ agent-accessible over MCP (after WP05).
 
 | WP | Title | Severity | Stage | Impact |
 |----|-------|----------|-------|--------|
+| WP13 | Daemon process envelope + operational layer (engramd lifecycle, migrate, install, logger, retry) | HIGH | draft | — |
 | WP00 | Repo scaffold + tooling baseline | LOW | spec | repo exists; build/test green |
 | WP01 | Core scaffold (store, schemas, AppLog, jobs, OCC, CoreService, doctor, init) | HIGH | spec | **M0** remember→recall (grep) |
 | WP02 | Plugin host + LlmPlugin (Vercel AI SDK) | HIGH | ready | LLM substrate, multi-provider |
@@ -103,6 +104,12 @@ WP00 -> WP01 -+-> WP02 -+
 > `depends_on: WP02` and WP08 also `depends_on: WP02` (both need the LLM/plugin
 > host). The ASCII shows WP06/WP07 hanging off WP05 for readability; do not start
 > WP07/WP08 until WP02 is also `verified`. WP02→WP07, WP02→WP08.
+>
+> **WP13 (daemon process envelope + operational layer)** — added by the 2026-05-26
+> gap-scan; owns the `engramd` process, §9.9 startup/shutdown, schema-migration,
+> logger, unified retry, S-07 store-open symlink scan, and the operational CLI.
+> Gated on WP05 (assembled startup→MCP-bind) + WP01 (PID/spool primitives);
+> **blocks WP11** (E2E needs a real startable daemon). WP05→WP13→WP11; WP01→WP13.
 
 WP12 cutover (parallel, gated): stage1 build→WP05 · stage2 WP06 hooks coexist ·
 stage3 migrate content (git-commit backup) · stage4 WP08 dreaming → re-point QMD

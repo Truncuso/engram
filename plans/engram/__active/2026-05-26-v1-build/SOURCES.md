@@ -16,7 +16,9 @@ updated: 2026-05-26
 
 | ID | Type | Title | Location | Retrieved | Relevance | Notes |
 |----|------|-------|----------|-----------|-----------|-------|
-|  |
+| SRC-01 | FILE | engram SPEC v2.1 | `docs/engram-SPEC.md` | 2026-05-26 | authoritative design — all WPs | source of truth; flag any WP that contradicts it |
+| SRC-02 | FILE | De-risking spike results | `docs/research/spikes-2026-05-26.md` | 2026-05-26 | de-risking evidence (Spikes 1/1b/2/3) | confirms transport/mechanism; Spike-1b proves SDK rejection, NOT generation (see OQ-06) |
+| SRC-03 | FILE | ADRs 0001–0004 | `docs/adr/` | 2026-05-26 | locked decisions | TS single-package, Vercel-AI substrate, plugins-as-derived-indexes |
 
 ## Source Types
 
