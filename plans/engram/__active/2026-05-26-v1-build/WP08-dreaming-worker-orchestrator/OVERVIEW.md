@@ -72,10 +72,10 @@ OCC, C12), §9.4 (merge validation), §9.5 (forgetting rails, rollback), §8.3
 | W08-2 | dream distills staging → memories w/ derived_from; uncorroborated procedural at confidence 0.3/dormant; 2nd episode promotes | SC-5 | integration (8b) |
 | W08-3 | two-layer contradiction → review queue, no auto-resolve, no `contradicts` edge (C5) | SC-6 | integration (8b) |
 | W08-4 | safe/gated classification deterministic (LLM cannot self-classify, S-11) | per §5.5 | unit (8c) |
-| W08-5 | active-pool floor blocks mass-archive regardless of merge_policy:always-auto | SC-13 | integration (8c) |
-| W08-6 | manifest schema-validation rejects injected frontmatter → job FAILED (C6/S-05) | SC-11 | integration (8c) |
+| W08-5 | active-pool floor blocks mass-archive regardless of merge_policy:always-auto | SC-14 | integration (8c) |
+| W08-6 | manifest schema-validation rejects injected frontmatter → job FAILED (C6/S-05) | SC-12 | integration (8c) |
 | W08-7 | forget → dormant after ≥2 consecutive sub-threshold runs; still searchable | SC-7 | integration (8c/8d) |
-| W08-8 | `dream.trigger` out-of-scope → scope-denied (S-13) | SC-12 | integration (8d) |
+| W08-8 | `dream.trigger` out-of-scope → scope-denied (S-13) | SC-13 | integration (8d) |
 | W08-9 | rollback reverts a merged dream (git revert) | per §9.5 | integration (8d) |
 
 ## Recommended Agents

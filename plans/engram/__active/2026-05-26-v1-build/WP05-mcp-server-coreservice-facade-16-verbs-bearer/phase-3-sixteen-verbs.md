@@ -11,10 +11,14 @@ verify: "npm test tests/integration/mcp-verbs — all 16 tool names are present 
 
 # Phase 3: All 16 verbs + outputSchema + C11 + scope-denied
 
-**Goal:** All 16 verbs from the §6.3 verb table are registered. `memory.*`
-(10 verbs) and `system.status` delegate to `CoreService`. `dream.*` (4 verbs:
-`dream.list`, `dream.configure`, `dream.trigger`, `dream.status`, `dream.result`
-— 5 total, but `dream.result` waits on WP08 data) return `not-implemented` stubs.
+**Goal:** All verbs from the §6.3 verb table are registered:
+**11 `memory.*` + 5 `dream.*` + 1 `system.status` = 17 tool registrations**
+(the spec's "16 verbs" counts the 11 memory + 5 dream; `system.status` is the
+status verb/resource). `memory.*` (11 verbs: init, remember, update, recall, get,
+list, forget, ingest, history, confirm, governance_delete) and `system.status`
+delegate to `CoreService`. All 5 `dream.*` (`dream.list`, `dream.configure`,
+`dream.trigger`, `dream.status`, `dream.result`) return `not-implemented` stubs
+here (`dream.result` is naturally empty until WP08 produces job data).
 
 Per §6.3 error semantics: protocol errors → JSON-RPC `error` field;
 tool-execution errors → `result.isError: true + content`. Every verb has

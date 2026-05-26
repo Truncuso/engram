@@ -11,11 +11,22 @@ updated: 2026-05-26
 
 ## Build Verification Gates (All WPs)
 
-Repo-adaptive — fill with the actual build/lint/test commands for this repo.
+Every WP must pass these before its `stage:` advances to `verified`
+(per engram-typescript rule: strict TS, Vitest, ≥80% coverage).
 
 | Gate | Command | Expected |
 |------|---------|----------|
-|  |
+| Typecheck | `npm run typecheck` (`tsc --noEmit`) | exit 0, 0 errors |
+| Lint | `npm run lint` (`eslint`) | exit 0, 0 errors |
+| Unit + integration | `npm test` (`vitest run`) | all green |
+| Coverage | `vitest run --coverage` | ≥ 80% |
+| E2E (WP11 gate) | `npm run e2e` | 18 SC files, 0 failures, 0 skips* |
+| CI | push → GitHub Actions | green |
+
+> *The "0 skips" E2E gate is in tension with the Ollama hard-prereq for
+> SC-3/5/6/16 (OQ-06 / FINDINGS W-9). Resolve the CI strategy (self-hosted
+> Ollama runner, or recorded `graph.json` fixtures + cloud-model fallback) before
+> WP11 runs, or the final gate cannot pass on a bare runner.
 
 ---
 

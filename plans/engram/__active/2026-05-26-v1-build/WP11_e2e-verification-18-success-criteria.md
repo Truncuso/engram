@@ -67,7 +67,7 @@ passable; the test file names follow the criterion slug.
 | SC-15 | `engram doctor` detects a planted broken-frontmatter file and quarantines it without breaking daemon startup | `tests/e2e/sc15-doctor-quarantine-broken-fm.test.ts` | WP01 |
 | SC-16 | `governance_delete --purge-history` purges a secret from working tree, git history, AppLog (tombstoned), QMD index, and graphify graph | `tests/e2e/sc16-governance-delete-purge-history.test.ts` | WP10 |
 | SC-17 | Streamable HTTP MCP on `127.0.0.1` accepts a bearer token, denies missing/bad tokens, exposes 16 verbs + `engram://system/status` resource | `tests/e2e/sc17-mcp-bearer-16-verbs-resource.test.ts` | WP05 |
-| SC-18 | `engram status` reports daemon healthy with plugin health for QMD, graphify, LLM | `tests/e2e/sc18-status-plugin-health.test.ts` | WP05 |
+| SC-18 | `engram status` reports daemon healthy with plugin health for QMD, graphify, LLM | `tests/e2e/sc18-status-plugin-health.test.ts` | WP05 + WP07 (graphify plugin health is not live until WP07; the `system.status` resource scaffold is WP05) |
 
 ---
 

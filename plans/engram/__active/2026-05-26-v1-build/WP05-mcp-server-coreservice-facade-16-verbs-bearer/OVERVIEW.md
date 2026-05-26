@@ -41,6 +41,13 @@ SPEC refs: §2.1 (CoreService facade), §6.3 (Streamable HTTP, bearer, 16 verbs,
 error semantics, C11), §7.1 (access control), §8.2–8.3 (bearer token 0600,
 S-03), §9.9 step 5 (bind MCP server), §10.3 (system.status resource).
 
+> **Verb count clarification (review 2026-05-26):** the "16 verbs" =
+> **11 `memory.*` + 5 `dream.*`**. `system.status` is the additional status
+> verb/resource (`engram://system/status`), per SC-17 "16 verbs + status
+> resource". The §6.3 table header label "16 verbs" undercounts its own 17 rows by
+> one (a spec-header nit, tracked in FINDINGS N-9); the plan registers all of
+> `memory.*` (11) + `dream.*` (5) + `system.status` (1) = 17 tools.
+
 ## Target Files
 
 - `src/core/coreservice.ts` — transport-agnostic facade; `{ok, data, error}` envelope; access-control enforcement on every call (§7.1)
@@ -49,7 +56,7 @@ S-03), §9.9 step 5 (bind MCP server), §10.3 (system.status resource).
 - `src/mcp/auth.ts` — token issuance (`memory.init` / `engram agent add`), 0600 storage, revocation; agent identity → caps/scope
 - `src/mcp/router.ts` — tool/resource registration; maps 16 MCP tool names to `CoreService` calls
 - `src/mcp/verbs/memory.ts` — `memory.*` verb handlers (10 verbs); `outputSchema` per verb
-- `src/mcp/verbs/dream.ts` — `dream.*` verb handlers (4 verbs); `dream.*` stubbed `not-implemented` until WP08d
+- `src/mcp/verbs/dream.ts` — `dream.*` verb handlers (**5 verbs**: `dream.list`, `dream.configure`, `dream.trigger`, `dream.status`, `dream.result`); all stubbed `not-implemented` until WP08d
 - `src/mcp/verbs/system.ts` — `system.status` verb handler
 - `src/mcp/resources/status.ts` — `engram://system/status` resource + `sendResourceUpdated` subscription
 - `tests/integration/mcp-auth.test.ts` — bearer accept/deny; 16-verb smoke; C11 cross-agent reject

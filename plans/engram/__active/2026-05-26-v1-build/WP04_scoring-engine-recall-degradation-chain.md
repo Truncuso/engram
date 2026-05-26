@@ -35,6 +35,14 @@ a four-tier degradation chain (QMD hybrid 300 ms → BM25 150 ms → filesystem 
 pipeline touches stats.db for recency (async, after response). This WP closes
 Milestone M1: the `remember → recall` path is end-to-end and scored.
 
+> **Dependency note (review 2026-05-26):** the `depends_on: WP02` edge is
+> **type-only** — WP04 needs the `PluginLifecycle`/`RetrievalPlugin` interface
+> types that originate in WP02. The scoring engine does **not** call `LlmPlugin`
+> and does **not** import the retrieval plugin (§4.D invariant): recall
+> (`degradation.ts`) calls `RetrievalPlugin.search` for relevance hits; scoring
+> (`engine.ts`) only fuses pre-fetched hits. Do not read this edge as a
+> scoring↔LLM coupling.
+
 ---
 
 ## Target Files

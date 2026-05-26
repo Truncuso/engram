@@ -2,7 +2,7 @@
 name: wp06-capture-captureintake-staging
 title: Capture + CaptureIntake + staging
 type: work-package
-stage: ready
+stage: spec
 severity: HIGH
 created: 2026-05-26
 updated: 2026-05-26

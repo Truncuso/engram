@@ -102,9 +102,9 @@ harness started in WP05/WP08 integration tests.
 | ID | Test | Expected Result | Method |
 |----|------|-----------------|--------|
 | SC-10 (§12.3) | Agent B cannot recall agent A's `private` memory | `memory.recall` returns 0 hits for agent A's private memories when called by agent B | `s03-bearer-impersonation.test.ts` + access-control path |
-| SC-11 (§12.3) | Planted prompt-injection fails schema validation | Injected frontmatter fields absent from produced memory; job does not fail unless schema violation detected in manifest | `s05-prompt-injection.test.ts` |
-| SC-12 (§12.3) | `dream.trigger` from out-of-scope agent returns `scope-denied` | MCP returns `scope-denied`; AppLog has `mcp_denied` event | `s13-dream-scope.test.ts` |
-| SC-13 (§12.3) | Active-pool floor blocks mass-archive regardless of `merge_policy: always-auto` | Merge validator refuses; job → `FAILED`; tested in WP08 but cross-referenced here | `s11-safe-gated-gaming.test.ts` or dedicated floor test |
+| SC-12 (§12.3) | Planted prompt-injection fails schema validation | Injected frontmatter fields absent from produced memory; job does not fail unless schema violation detected in manifest | `s05-prompt-injection.test.ts` |
+| SC-13 (§12.3) | `dream.trigger` from out-of-scope agent returns `scope-denied` | MCP returns `scope-denied`; AppLog has `mcp_denied` event | `s13-dream-scope.test.ts` |
+| SC-14 (§12.3) | Active-pool floor blocks mass-archive regardless of `merge_policy: always-auto` | Merge validator refuses; job → `FAILED`; tested in WP08 but cross-referenced here | `s11-safe-gated-gaming.test.ts` or dedicated floor test |
 | S-02 planted MAC | Bad MAC staging entry rejected | Dreaming worker skips/rejects entry; no memory written from it | `s02-staging-mac.test.ts` |
 | S-03 bearer | Missing/bad/revoked token returns 401 | HTTP 401; `mcp_denied` in AppLog | `s03-bearer-impersonation.test.ts` |
 | S-05 orchestrator | Schema-invalid manifest → job FAILED | Job state = FAILED; manifest preserved; no merge | `s05-prompt-injection.test.ts` |

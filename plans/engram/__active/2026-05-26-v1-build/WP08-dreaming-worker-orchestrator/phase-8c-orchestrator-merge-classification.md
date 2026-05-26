@@ -5,7 +5,7 @@ type: phase
 phase_status: pending
 wp: wp08-dreaming-worker-orchestrator
 goal: The orchestrator validates a manifest against the dream-output schema, classifies each hunk deterministically (safe/gated, §5.5), three-way-merges field-disjoint safe hunks, queues gated/overlap hunks for review, and enforces merge validation incl. active-pool floor. Testable with hand-written manifests — zero LLM.
-verify: "npm test tests/integration/orchestrator — a manifest with one auto-safe + one gated hunk: safe merges, gated → review queue; planted version regression rejected; active-pool floor blocks mass-archive even with merge_policy:always-auto; injected-frontmatter manifest → job FAILED."
+verify: "npm test tests/integration/orchestrator — a manifest with one auto-safe + one gated hunk: safe merges, gated → review queue; planted version regression rejected; active-pool floor blocks mass-archive even with merge_policy:always-auto (SC-14); injected-frontmatter manifest → job FAILED (SC-12)."
 ---
 <!-- Template: WP-folder PHASE v2 (frontmatter-first) -->
 
@@ -23,8 +23,8 @@ feeding **hand-written manifests** — zero LLM.
 
 **Verify:** `npm test tests/integration/orchestrator` — mixed safe/gated manifest
 classifies + routes correctly; version regression rejected; active-pool floor
-blocks mass-archive under `always-auto` (SC-13); injected-frontmatter manifest →
-FAILED (SC-11).
+blocks mass-archive under `always-auto` (SC-14); injected-frontmatter manifest →
+FAILED (SC-12).
 
 ## Steps
 

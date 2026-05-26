@@ -50,7 +50,7 @@ agent-accessible over MCP (after WP05).
 | WP03 | Retrieval plugin (QMD in-process) + stats sidecar | HIGH | ready | relevance + recency source |
 | WP04 | Scoring engine + recall (degradation chain) | HIGH | ready | **M1** full scored recall |
 | WP05 | MCP server + CoreService facade (16 verbs, bearer) | HIGH | ready | **M2** agent-accessible |
-| WP06 | Capture + CaptureIntake + staging | HIGH | ready | sessions → staging |
+| WP06 | Capture + CaptureIntake + staging | HIGH | spec | sessions → staging |
 | WP07 | Ingest worker (graphify GraphPlugin, Ollama) | MEDIUM | spec | raw → memories |
 | WP08 | Dreaming worker + orchestrator (8a–8d) | HIGH | spec | consolidation + learning |
 | WP09 | Threat-model hardening (planted-attack tests) | HIGH | ready | 6 CRITICAL mitigations proven |
@@ -98,6 +98,11 @@ WP00 -> WP01 -+-> WP02 -+
    M1 = after WP04 (I x R x Recency x m_v, degradation chain)
    M2 = after WP05 (MCP bearer, 16 verbs [dream.* stubbed], status resource)
 ```
+
+> **Edges not drawn above (from per-WP frontmatter — authoritative):** WP07 also
+> `depends_on: WP02` and WP08 also `depends_on: WP02` (both need the LLM/plugin
+> host). The ASCII shows WP06/WP07 hanging off WP05 for readability; do not start
+> WP07/WP08 until WP02 is also `verified`. WP02→WP07, WP02→WP08.
 
 WP12 cutover (parallel, gated): stage1 build→WP05 · stage2 WP06 hooks coexist ·
 stage3 migrate content (git-commit backup) · stage4 WP08 dreaming → re-point QMD
