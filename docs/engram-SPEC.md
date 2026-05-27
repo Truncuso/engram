@@ -6,11 +6,11 @@ version: v2.1 (2026-05-26)
 status: APPROVED — implementable; folds Round-3 consistency review + 4 de-risking spikes
 supersedes: SPEC v2 (2026-05-22), SPEC v1 (2026-05-22 draft) — see git history
 inputs:
-  - docs/review/security-review.md
-  - docs/review/architecture-review.md
-  - docs/review/failure-safety-review.md
-  - docs/review/observability-review.md
-  - docs/review/SYNTHESIS.md  (D-1..D-7, R-1..R-5)
+  - docs/_history/round-1-2/security-review.md
+  - docs/_history/round-1-2/architecture-review.md
+  - docs/_history/round-1-2/failure-safety-review.md
+  - docs/_history/round-1-2/observability-review.md
+  - docs/_history/round-1-2/SYNTHESIS.md  (D-1..D-7, R-1..R-5)
   - docs/research/qmd-graphify-verification.md
   - docs/research/agentmemory-patterns.md
   - docs/research/mcp-agentsdk-contract.md
@@ -112,7 +112,7 @@ architectural shape. It was then audited by four parallel specialist reviews
 plus four research reports. The reviews **affirmed the architecture** and
 supplied four missing contracts; the research **validated the tool choices**
 and surfaced five corrections to v1's memory model. SPEC v2 is the merged
-output. See `docs/review/SYNTHESIS.md` for the decision trail
+output. See `docs/_history/round-1-2/SYNTHESIS.md` for the decision trail
 (D-1…D-7, R-1…R-5) and how each finding lands in this document.
 
 ---

@@ -60,5 +60,5 @@ Adopt a **microkernel** with a **detached dreaming worker process**.
 
 ## References
 
-- `docs/spec/SPEC.md` §2 (Architecture)
+- `docs/engram-SPEC.md` §2 (Architecture)
 - Graph-store review handoff, 2026-05-21 (the Kuzu-archived finding)
