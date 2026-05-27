@@ -73,6 +73,38 @@ An engram store holds memory content and may hold secrets. The store directory
 (`~/.engram/` or `<repo>/.engram/`) is git-ignored and **must not be pushed to a
 public remote**. This repository contains only engram's *source*, never a store.
 
+## Acknowledgements / Inspirations
+
+engram's design is informed by — and where called out, explicitly rejects ideas
+from — a body of open-source agentic-memory work. The "studied / inspired by /
+adopted from" list (with adopt-adapt-reject verdicts) is in
+[`docs/research/agentic-memory-survey-2026-05-27.md`](docs/research/agentic-memory-survey-2026-05-27.md).
+Short attribution:
+
+- **[Pratiyush/llm-wiki](https://github.com/Pratiyush/llm-wiki)** (MIT) —
+  session → static Markdown wiki with wikilinks; informs engram's `llm-wiki`
+  and `obsidian-vault` KB types.
+- **[rohitg00/agentmemory](https://github.com/rohitg00/agentmemory)**
+  (Apache-2.0) — 4-tier memory + 12 capture hooks + 8 slash skills; informs
+  engram's hook/skill surface and seed skill set.
+- **[letta-ai/letta](https://github.com/letta-ai/letta)** (formerly MemGPT,
+  Apache-2.0) — core/recall/archival hierarchy; informs the working/episodic
+  framing while engram keeps episodic immutability.
+- **[mem0ai/mem0](https://github.com/mem0ai/mem0)** (Apache-2.0) — two-phase
+  extract-then-update consolidation; informs the dreaming-worker output
+  contract.
+- **[topoteretes/cognee](https://github.com/topoteretes/cognee)** (Apache-2.0)
+  — multi-dataset scoping with isolation; informs the multi-KB registry +
+  cross-KB bridge model.
+- **[agno-agi/agno](https://github.com/agno-agi/agno)** (MPL-2.0) — multi-agent
+  shared/team memory; cross-agent dreaming explicitly deferred to v2 (D-3).
+- **[kingjulio8238/Memary](https://github.com/kingjulio8238/Memary)** (MIT) —
+  entity-grounded recall over Neo4j; informs entity-match edges in cross-KB
+  bridges.
+
+Prior art also cited in SPEC v2.1: MemMachine, ElephantBroker, TierMem,
+agentmemory's iii-engine backing.
+
 ## License
 
 MIT.
