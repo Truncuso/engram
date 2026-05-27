@@ -1,10 +1,10 @@
 ---
-title: "engram — Agentic Memory System — SPEC v2.1"
+title: "engram — Agentic Memory System — SPEC v2.2"
 project: engram
 repo: github.com/Truncuso/engram
-version: v2.1 (2026-05-26)
-status: APPROVED — implementable; folds Round-3 consistency review + 4 de-risking spikes
-supersedes: SPEC v2 (2026-05-22), SPEC v1 (2026-05-22 draft) — see git history
+version: v2.2 (2026-05-27)
+status: APPROVED — implementable; folds Round-3 consistency review + 4 de-risking spikes + v2.2 multi-KB & skill-subsystem amendment
+supersedes: SPEC v2.1 (2026-05-26), SPEC v2 (2026-05-22), SPEC v1 (2026-05-22 draft) — see git history
 inputs:
   - docs/_history/round-1-2/security-review.md
   - docs/_history/round-1-2/architecture-review.md
@@ -18,7 +18,7 @@ inputs:
 tags: [AGI_AgenticAI_Memory, AGI_AgenticAI_Memory_CodingAgent, spec, v2]
 ---
 
-# engram — Agentic Memory System — SPEC v2
+# engram — Agentic Memory System — SPEC v2.2
 
 A standalone, self-contained, installable application that gives AI coding
 agents a **persistent, principled, self-organizing memory** — and a *dreaming*
@@ -30,6 +30,29 @@ research reports) after a **Round-3 internal-consistency review** and **four
 de-risking spikes** run before implementation. v2.1 fixes 14 contradictions the
 merge introduced, closes 2 design gaps, folds in spike findings, and closes the
 last 3 open questions. It is intended to be implementable end-to-end.
+
+### Changelog v2.1 → v2.2 (2026-05-27)
+
+v2.2 is an **additive amendment** (new §15) — no v2.1 invariants change, no
+v1 work-packages are restructured. v1.2 (multi-KB + skills) is gated on v1
+milestone M2 (WP05 verified).
+
+**New material:**
+- §15 *Multi-KB Orchestration & Agent Skills* with sub-sections §15.1–§15.9.
+- New v2.2 success criteria SC-19…SC-26 (additive to §12.3).
+- 4 new ADRs: ADR-0005 (KbPlugin), ADR-0006 (lifecycle workers reuse dream
+  state machine), ADR-0007 (cross-KB bridges as derived graph layer),
+  ADR-0008 (skill subsystem + installer).
+- Inspiration survey at `docs/research/agentic-memory-survey-2026-05-27.md`
+  with adopt / adapt / reject verdicts.
+
+**Unchanged invariants (re-asserted):**
+- Files are truth; QMD index + graphify graph + AppLog + git are derived and
+  rebuildable per KB.
+- Scoring engine owns the formula; no RRF; QMD = relevance only.
+- Worker is detached; output schema-validated; episodic immutable during
+  dreaming.
+- Cross-agent dreaming remains v2 (D-3 deferral).
 
 ### Changelog v2 → v2.1 (2026-05-26)
 
@@ -1423,6 +1446,155 @@ document, not against v1.
 
 ---
 
-*SPEC v2 complete. Folds D-1…D-7, R-1…R-5, the 4 review contracts, and the
-4 research reports. Living document — append decisions and findings here
-as the design hardens during implementation.*
+## 15. Multi-KB Orchestration & Agent Skills (v2.2 amendment)
+
+> **Status:** SPEC v2.2 amendment (2026-05-27). Extends v2.1 with multi-knowledge-base support, per-KB lifecycle workers, cross-KB bridges, an agent-installable skill subsystem, and tightened episodic↔semantic provenance. **All v2.1 invariants hold unchanged.** Backed by ADR-0005, ADR-0006, ADR-0007, ADR-0008 and the inspiration survey at `docs/research/agentic-memory-survey-2026-05-27.md`.
+>
+> Implementation plan: `plans/engram/__active/2026-05-27-v1.2-multi-kb-and-skills/`, gated on v1 milestone **M2** (WP05 verified).
+
+### 15.0 Motivation
+
+v2.1 ships *one* engram store per scope (`~/.engram/` global, `<repo>/.engram/` project). An agentic-memory system in practice needs to read across several knowledge sources of different shapes:
+
+- the agent's running session memory,
+- the project's own Markdown memory store,
+- a human-curated wiki (Obsidian vault or llm-wiki layout) used as ground-truth references,
+- a raw-sources pool of ingest material (PDFs, transcripts, dumps),
+- a per-agent self-memory (Contextual + early Episodic) that resets at SessionEnd.
+
+These cannot share one frontmatter dialect, one write policy, or one ingest pipeline. v2.2 makes them first-class: a registry of named KB *instances* whose *types* are plugins, with the kernel orchestrating lifecycle work, recall fan-out, and cross-KB bridges. Files remain truth.
+
+### 15.1 KB types + `KbPlugin` contract
+
+A fifth plugin seam is added: `KbPlugin`. See ADR-0005.
+
+- A **KB type** is a `KbPlugin`. Built-in v1.2 types:
+  - `markdown-store` — engram's existing layout (the v2.1 store is a `markdown-store` KB instance after v1.2 lands).
+  - `llm-wiki` — Pratiyush/llm-wiki layout: `raw/sessions/`, `wiki/sources/`, `wiki/entities/`, `wiki/concepts/`, `wiki/syntheses/`, `wiki/comparisons/`, `wiki/questions/`.
+  - `obsidian-vault` — a user's Obsidian vault, including `.obsidian/` workspace and optional Dataview-aware retrieval.
+  - `raw-sources` — read-mostly pool of ingest material. Not recalled directly; the dreaming/ingest worker reads it and writes derivatives elsewhere.
+  - `agent-self` — per-agent scratch KB owning Contextual + early Episodic memory; resets at SessionEnd per R-2.
+- A **KB instance** is a registry row: `{id, name, type, root, config, lifecycle_schedule}`. Two `obsidian-vault` instances pointing at two vaults is supported.
+- The `KbPlugin` contract is small (~150 LOC in the kernel):
+
+  ```ts
+  interface KbPlugin {
+    manifest: { id: string; version: string; capabilities: KbCapability[] };
+    init(ctx: KbContext): Promise<void>;
+    validate(root: string): Promise<ValidationResult>;     // is dir a valid KB of this type?
+    layout(): KbLayout;                                    // dirs + frontmatter dialect
+    ingest?(input: IngestInput): Promise<IngestResult>;    // type-specific write path
+    lifecycleJobs(): JobSpec[];                            // default daily/weekly schedule
+  }
+  ```
+- Security-critical logic stays in the kernel (privacy filter, access control, safe/gated classification). A `KbPlugin` cannot opt out.
+
+### 15.2 KB registry
+
+The kernel owns the registry; the plugin owns the shape.
+
+- Registry storage: a new SQLite table `kbs(id, name, type, root, config_json, lifecycle_json, created, updated)` next to the existing `jobs` and `app_log` tables.
+- Lifecycle:
+  - `kb.register(type, root, name?)` → validates via the plugin, provisions a per-KB QMD index and a per-KB graphify graph under `.engram/indexes/<kb>/` and `.engram/graphs/<kb>/`, enqueues the plugin's default `lifecycleJobs()`.
+  - `kb.connect(id)` / `kb.disconnect(id)` — soft enable/disable without removing artifacts.
+  - `kb.unregister(id)` — removes registry row + per-KB indexes + per-KB bridges; **never** touches the KB's source files.
+  - `kb.list()` / `kb.status(id)` — listings with last-run, queue depth, doctor checks.
+  - `kb.route(query)` — returns the candidate KBs for a query (default: all connected; configurable to a subset).
+- Recall fans out across connected KBs and the **same scoring engine** (§3.6) ranks the union. No per-KB rank; no RRF.
+- Each KB has its own per-KB QMD index and per-KB graphify graph. The dreaming worker writes to the configured *output* KB (default: the `markdown-store` whose `is_primary: true`).
+
+### 15.3 Per-KB lifecycle workers
+
+Per-KB work reuses the existing dream-job state machine. See ADR-0006.
+
+- New job kinds in the same `jobs` table:
+  - `kb.daily.ingest` — pull new files into a KB and stage them for the worker.
+  - `kb.recall.rollup` — produce a per-KB recap of recently-accessed memories.
+  - `kb.connect.bridge` — rebuild cross-KB bridges (see §15.4).
+  - `kb.lifecycle.archive` — KB-specific archival; for `agent-self` runs at SessionEnd (per R-2).
+  - `kb.<type>.<custom>` — namespaced job kinds declared by individual KbPlugins via `lifecycleJobs()`.
+- Schedules live in the registry row (`config.lifecycle = { ingest: "0 4 * * *", rollup: "0 6 * * 1", bridge: "0 5 * * 0" }`). The daemon polls the registry every 60 s; user edits take effect without a daemon restart.
+- All v2.1 worker invariants hold: detached process; schema-validated output (§9.4); rate-limited archival (§9.5 R-5 active-pool floor); AppLog-audited.
+- New CLI: `engram kb run <kb> <job-kind>` (ad-hoc), `engram kb status <kb>`.
+- `engram doctor` gains per-KB checks: missing index, stale bridges, plugin manifest mismatch.
+
+### 15.4 Cross-KB bridges (derived layer)
+
+Cross-KB connections are a derived bridge index, not live edges. See ADR-0007.
+
+- Built by the `kb.connect.bridge` job kind from the per-KB graphify graphs.
+- Output: `.engram/bridges/bridges.json` (or per-pair files for very large stores).
+- Edge shape: `{from: kb_id/node_id, to: kb_id/node_id, kind, score, why}`. Bridge `kind`s are a closed enum owned by the kernel: `entity-match`, `title-match`, `embedding-near`, `derived-from-citation`, `contradicts`.
+- Recall does **not** fuse bridges into the scoring formula. Bridges are **opt-in expansion**: callers pass `expand_via_bridges: true` to walk one bridge hop from the top-K per-KB results; expanded candidates are tagged `via_bridge` so callers can present them as related-but-secondary.
+- `engram bridges show <id>` walks a bridge and explains why it exists (which `kind`, which score, which inputs).
+- Bridges are idempotent and rebuildable. Deleting `bridges/` is safe; the next scheduled run reconstructs them.
+
+### 15.5 Skill subsystem + installer
+
+engram ships as a skill subsystem under `~/.claude/skills/engram/` (or the equivalent on Codex, Gemini CLI, OpenCode, Cursor). See ADR-0008.
+
+- Orchestrator: `~/.claude/skills/engram/SKILL.md` registers `/engram` and is the entry point for composition. Sibling `chain.yaml` declares the deterministic chain.
+- Modular children (seed set):
+  - `engram-recall` — search across connected KBs; optional bridge expansion.
+  - `engram-remember` — write a memory to a chosen KB with type + frontmatter.
+  - `engram-forget` — lifecycle transition or audited `governance_delete`.
+  - `engram-recap` — recall + remember to produce a session recap.
+  - `engram-handoff` — recap + remember to produce a session handoff memory.
+  - `engram-session-history` — list sessions and their captured episodics.
+  - `engram-commit-context` — bundle the current task context into a memory.
+  - `engram-connect-kb` — discover + register + schedule a new KB.
+  - `engram-wiki-ingest` — pull session transcripts into an `llm-wiki` KB.
+  - `engram-session-rollup` — run `kb.recall.rollup` for the current KB.
+  - `engram-grill-with-memory` — engram-backed variant of the global grill skill.
+- Children are small and reusable. Each one calls MCP verbs; composition lives in `chain.yaml`, not in code.
+- **Installer:** `engram agent install [--target claude-code|codex|gemini|opencode|cursor]`:
+  1. Verifies engramd is running and reachable.
+  2. Writes the skill subsystem to the target's skill directory.
+  3. Registers the MCP server entry in the target's config.
+  4. Writes the 8 capture hooks (§6.1) + `PreCompact` to the target's hook config.
+  5. Prints a one-line success summary listing installed skills/hooks.
+- Uninstall: `engram agent uninstall`. Both idempotent.
+- **Self-improvement boundary:** the orchestrator does NOT rewrite child skills at runtime. Improvements land via the user's `/skill-improve` flow — propose-only, externally evaluated, diff-reviewed, git-committed.
+
+### 15.6 Auto-discovery
+
+A small kernel scanner asks each registered `KbPlugin.validate()` whether a candidate directory belongs to it.
+
+- `engram doctor --discover` scans known locations (`~/.obsidian/`, user home, current repo, `$XDG_DATA_HOME/engram/`, common Obsidian-vault paths, repos containing `MEMORY.md` or `.engram/`).
+- Each candidate is offered for one-line registration: `engram kb register --auto <id>` accepts the suggestion.
+- A daemon fs watcher on configured "watch roots" promotes newly-dropped KB roots into pending suggestions; the user confirms before registration. Auto-register without confirmation is opt-in via `config.kb.auto_register_validated: true`.
+- No silent registration: every register event lands in AppLog.
+
+### 15.7 Episodic↔semantic linkage (hardened)
+
+v2.1 already says dreaming products carry `derived_from` backlinks (R-4). v2.2 promotes that from a recommendation to a tested contract.
+
+- **Mandatory provenance:** every memory whose `origin = dreaming-merge` carries a non-empty `derived_from: [<episodic_id>, ...]` frontmatter array referencing the source episodics. A merge that produces a memory without `derived_from` FAILS schema validation (§9.4) and the job FAILS.
+- **Counterfactual gate for procedural promotion:** when dreaming wants to promote a pattern from semantic → procedural, the worker must first synthesize a counterfactual (does this pattern hold when the trigger condition is absent?). Failure to satisfy the gate keeps the memory at confidence 0.3, semantic. A regression test suite enforces the gate across known traps (the planted-attack tests of WP09 extended for v1.2).
+- **New verb / CLI:** `engram memory why <id>` walks `derived_from` recursively and renders the chain to the agent (episodic → derived semantic → procedural), letting the agent or user explain *how* a fact entered the store.
+- **Session-event correlation:** Episodics carry `session_id` and `tool_use_id` where available; recall renders `derived_from` chains across the bridge layer (§15.4) when the source episodic lives in a different KB instance (e.g., `agent-self`).
+
+### 15.8 v2.2 success criteria (additive to §12.3)
+
+| ID | Criterion |
+|----|-----------|
+| SC-19 | `engram kb register` accepts any of the 5 built-in types and provisions a per-KB QMD index + per-KB graphify graph idempotently. |
+| SC-20 | A recall query with `expand_via_bridges: true` returns at least the same results as without; expanded results carry `via_bridge`. |
+| SC-21 | `kb.daily.ingest`, `kb.recall.rollup`, `kb.connect.bridge` each respect the SPEC §5.4 state machine, retry policy, and AppLog audit identically to dream jobs. |
+| SC-22 | `engram agent install --target claude-code` writes the orchestrator + ≥10 child skills + MCP entry + 8+1 hooks to the right paths, and `engram agent uninstall` removes exactly those files. |
+| SC-23 | `engram doctor --discover` proposes registration for an Obsidian vault and an llm-wiki tree placed under a watched root. |
+| SC-24 | Every dreaming-product memory carries a non-empty `derived_from`; a planted merge job with an empty `derived_from` FAILS validation and FAILS the job. |
+| SC-25 | The counterfactual gate keeps a planted procedural promotion at confidence 0.3 when the counterfactual is unsatisfied. |
+| SC-26 | `engram memory why <id>` renders the full episodic → semantic → procedural chain across KB instances. |
+
+### 15.9 Out of scope for v2.2
+
+- Cross-agent / federated dreaming (D-3 deferral stands).
+- Live cross-KB edges (rejected per ADR-0007).
+- Unifying graphify graph + retrieval index into one store (rejected per ADR-0004).
+- A standalone KB orchestrator daemon (rejected per ADR-0006).
+- Tool-mediated mutation of episodic memory (rejected per R-4, ADR-0007).
+
+---
+
+*SPEC v2.2 amendment complete. Folds ADR-0005…0008 and the inspiration survey at `docs/research/agentic-memory-survey-2026-05-27.md`. All v2.1 invariants hold. Living document — append decisions and findings here as v1.2 implementation hardens.*

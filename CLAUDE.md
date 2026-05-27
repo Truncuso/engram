@@ -11,7 +11,7 @@ principled, self-organizing memory** plus a decoupled **dreaming** process that
 consolidates and learns from it. TS/Node daemon (`engramd`) + MCP server +
 detached worker; Markdown files = source of truth; QMD retrieval; graphify graph;
 scored recall. **The authoritative design is [`docs/engram-SPEC.md`](docs/engram-SPEC.md)
-(v2.1)** — read it before non-trivial work. Decisions are recorded as ADRs in
+(v2.2)** — read it before non-trivial work. Decisions are recorded as ADRs in
 [`docs/adr/`](docs/adr/).
 
 ## Reused global rules (load on demand)

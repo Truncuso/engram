@@ -1,6 +1,6 @@
 # engram — Architecture Invariants (project rule)
 
-The authoritative design is `docs/engram-SPEC.md` (v2.1). This rule states the
+The authoritative design is `docs/engram-SPEC.md` (v2.2; v1.2 multi-KB + skill subsystem amendment lives in §15 — see ADR-0005…0008). This rule states the
 load-bearing invariants that must hold in every change. Violating one is a
 review BLOCK, not a WARN.
 
