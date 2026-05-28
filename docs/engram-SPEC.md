@@ -1,10 +1,10 @@
 ---
-title: "engram — Agentic Memory System — SPEC v2.2"
+title: "engram — Agentic Memory System — SPEC v2.3"
 project: engram
 repo: github.com/Truncuso/engram
-version: v2.2 (2026-05-27)
-status: APPROVED — implementable; folds Round-3 consistency review + 4 de-risking spikes + v2.2 multi-KB & skill-subsystem amendment
-supersedes: SPEC v2.1 (2026-05-26), SPEC v2 (2026-05-22), SPEC v1 (2026-05-22 draft) — see git history
+version: v2.3 (2026-05-28)
+status: APPROVED — implementable; v2.3 amendment adds agentic-OS framing, v1 read-only dashboard, multi-format ingest (PDF/YouTube/transcript), ADR-as-memory type, and full hook test gate
+supersedes: SPEC v2.2 (2026-05-27), SPEC v2.1 (2026-05-26), SPEC v2 (2026-05-22), SPEC v1 (2026-05-22 draft) — see git history
 inputs:
   - docs/_history/round-1-2/security-review.md
   - docs/_history/round-1-2/architecture-review.md
@@ -18,7 +18,7 @@ inputs:
 tags: [AGI_AgenticAI_Memory, AGI_AgenticAI_Memory_CodingAgent, spec, v2]
 ---
 
-# engram — Agentic Memory System — SPEC v2.2
+# engram — Agentic Memory System — SPEC v2.3
 
 A standalone, self-contained, installable application that gives AI coding
 agents a **persistent, principled, self-organizing memory** — and a *dreaming*
@@ -30,6 +30,39 @@ research reports) after a **Round-3 internal-consistency review** and **four
 de-risking spikes** run before implementation. v2.1 fixes 14 contradictions the
 merge introduced, closes 2 design gaps, folds in spike findings, and closes the
 last 3 open questions. It is intended to be implementable end-to-end.
+
+### Changelog v2.2 → v2.3 (2026-05-28)
+
+v2.3 is an **additive amendment** that folds the user's "memory overhaul" requirements into the SPEC body. **No v2.2 invariants change. No v1/v1.2 work-packages are restructured.** A new milestone v1.3 (WP18–WP23, plus edits to WP07 and WP11) carries the new scope; the v1 build order (WP00–WP12) and v1.2 multi-KB (WP13–WP17) are untouched in shape.
+
+**Additions:**
+- §1 *Vision & Scope* gains an **"engram as the memory layer of an agentic OS"** framing paragraph (inspired by the Hermes article — see `docs/_history/memory-overhaul/`); the "Not a wiki" and "Not Obsidian-centric" lines are clarified — wiki-style organisation IS a first-class use case via the wiki `KbPlugin` (§15.1), and Obsidian vaults ARE first-class read-only KBs.
+- §1.2 capability table: **dashboard moves from v2 to v1 (read-only)** — navigation + semantic search + knowledge-graph view, loopback-only, bearer-gated (ADR-0010). Editing + ingest UI remain v2.
+- §3 *Memory Model*: **ADRs are a first-class memory type** via a dedicated `KbPlugin` instance (ADR-0009). Recall surfaces them in the `procedural` track.
+- §4 *Information Flow*: ingest flows for PDF (ADR-0012), YouTube transcript (ADR-0011), generic transcript files (.vtt/.srt/.txt), and Obsidian (already in §15.1) are named and cross-referenced to WP18–WP20.
+- §6 MCP contract: new verbs `ingest.pdf`, `ingest.youtube`, `ingest.transcript`, `ingest.obsidian`, `ingest.adr` (subverbs of the existing `ingest.*` namespace; full contracts in the respective WPs).
+- §8 *Threat Model*: dashboard auth gate (loopback only, bearer-gated like MCP); YouTube fetch egress note.
+- §9 *Failure Behaviour*: dashboard degraded mode when engramd is down (returns a static "daemon unavailable" page; never silently breaks).
+- §10 *Observability*: per-format ingest metrics counter shape.
+- §11 *Technology Decisions*: dashboard stack — React + sigma.js (mirrors `nashsu/llm_wiki` and `Pratiyush/llm-wiki` graph viz choice); PDF lib — `pdfplumber`; YouTube — `youtube-transcript-api` primary, `yt-dlp` + `whisper` fallback gated by config (ADR-0011).
+- §12 v1 scope: dashboard (read-only) moves IN; add SC-27…SC-35 covering new ingest formats, dashboard, ADR-as-memory, the **hook test suite gate**, YouTube fallback gating, and install idempotency.
+- §13 implementation phases preview updated to reflect WP18–WP23 slot.
+
+**New ADRs:** 0009 (ADR-as-memory-type), 0010 (dashboard-v1-read-only-react-sigma), 0011 (youtube-transcript-extraction-pipeline), 0012 (pdf-book-ingest-pipeline) — all in `docs/adr/`.
+
+**New WPs:** WP18 (PDF/book ingest), WP19 (YouTube transcript), WP20 (transcript files), WP21 (ADR-as-memory), WP22 (read-only dashboard), WP23 (v1.3 E2E gate) — in `plans/engram/__active/2026-05-28-v1.3-ingest-formats-and-dashboard/`.
+
+**WP edits:** WP07 (ingest-worker) gains hook-test mandate (SC-32); WP11 (E2E verification) stays scoped to the original SC-1…SC-18 and cross-references WP23, which owns the v2.3 gate SC-27…SC-35.
+
+**History preserved:** `/home/christoph/.claude/plans/memory-overhaul/` (Phase 1 unified-memory + Phase 2 llm-wiki-architecture) is moved into `docs/_history/memory-overhaul/` with `ARCHIVE.md`; root-level `ARCHIVE.md` indexes all `docs/_history/` content.
+
+**Attribution clarification:** README and `docs/research/agentic-memory-survey-2026-05-27.md` are extended to attribute **both** `nashsu/llm_wiki` and `Pratiyush/llm-wiki` (user-cited the former; engram had only the latter — both are valid references to the LLM-wiki pattern; cross-referenced).
+
+**Unchanged invariants (re-asserted):**
+- All v2.1 invariants (§3.6, §6.2, §11.2 RRF rejection, ADR-0004/0006/0007).
+- v2.2 invariants: SPEC §15 multi-KB, ADRs 0005–0008.
+- Episodic memories remain immutable during dreaming (R-4, §15.9).
+- Files are truth; QMD index + graphify graph + AppLog + git are derived.
 
 ### Changelog v2.1 → v2.2 (2026-05-27)
 
@@ -138,6 +171,8 @@ and surfaced five corrections to v1's memory model. SPEC v2 is the merged
 output. See `docs/_history/round-1-2/SYNTHESIS.md` for the decision trail
 (D-1…D-7, R-1…R-5) and how each finding lands in this document.
 
+A subsequent **v2.3 amendment (2026-05-28)** folds the user's full "memory overhaul" requirements into this SPEC — agentic-OS framing, v1 read-only dashboard, multi-format ingest (PDF/YouTube/transcript), ADRs as a first-class memory type, and a hook test gate. The amendment is additive and preserves every v2/v2.1/v2.2 invariant. The legacy `/home/christoph/.claude/plans/memory-overhaul/` is preserved in `docs/_history/memory-overhaul/` (with `ARCHIVE.md`) so the full design trail — including superseded ideas — remains auditable from this repo.
+
 ---
 
 ## 1. Vision & Scope
@@ -148,13 +183,13 @@ it with hybrid scored search, and runs a decoupled *dreaming* process to
 consolidate, connect, and learn from it.
 
 ### 1.1 What it is NOT
-- **Not a wiki.** A hand-authored knowledge base is just *one origin* of memory.
-- **Not Obsidian-centric.** Memories are Markdown files; Obsidian *can* open
-  the folder, but engram does not require it.
+- **Not _only_ a wiki.** A hand-authored knowledge base is *one form* of memory — and IS first-class via the wiki `KbPlugin` (§15.1). Engram is a typed-memory system that *includes* a wiki-style organisation pattern, not a wiki replacement for Obsidian/Notion.
+- **Not Obsidian-dependent.** Engram does not require Obsidian to run. Obsidian vaults ARE supported as first-class read-only KBs (§15.1) — open the engram store in Obsidian if you want a richer editor; engram itself is editor-agnostic.
 - **Not a fork of agentmemory.** `rohitg00/agentmemory` is studied as a
   reference for *patterns* (hooks, 4-tier model, RRF, privacy filter, viewer)
   but engram shares no code with it and takes no dependency on its iii engine.
 - **Not an agent config.** It is a standalone product the user installs.
+- **The memory layer of an agentic OS.** Engram sits beneath the agent (Claude Code, Codex, generic), beside the LLM substrate, and above the filesystem — providing the persistent, principled, self-organizing memory the agent does not have on its own. The framing draws on the Hermes article ("identity layer + memory system + self-learning loop" as the three pillars of an agentic OS) — engram fills the second pillar. See `docs/_history/memory-overhaul/` for the prior design trail.
 
 ### 1.2 v1 scope vs v2
 
@@ -176,7 +211,8 @@ consolidate, connect, and learn from it.
 | **§9 Failure & Safety; §10 Observability** | ✅ | |
 | Cross-agent dreaming | spec'd (D-3) | ✅ |
 | Capture plugins for Codex / Copilot / generic | | ✅ |
-| Dashboard (graph view, dreaming visualization, review queue UI) | spec'd | ✅ |
+| Dashboard — **read-only** (browse memories, semantic search, knowledge-graph view; loopback + bearer-gated) | ✅ | |
+| Dashboard — editing + ingest UI + dreaming visualization + review queue | | ✅ |
 | App-log hash-chained tamper-evidence | | ✅ |
 | Team / multi-machine sync | | ✅ |
 
@@ -1330,8 +1366,10 @@ trims (D-7) apply: 2 relation kinds (`derived_from`, `related_to`);
 cross-agent dreaming deferred (D-3); HTTP metrics port deferred (D-5);
 hash-chained AppLog deferred (D-4).
 
-**v1 explicitly OUT:** dashboard UI · cross-agent dreaming · capture plugins
+**v1 explicitly OUT:** dashboard editing/ingest UI · cross-agent dreaming · capture plugins
 beyond Claude Code · team/multi-machine sync · auto hard-delete · hosted/SaaS.
+
+**v1 explicitly IN (v2.3 additions):** read-only dashboard (browse + semantic search + knowledge-graph view, ADR-0010) · PDF/book ingest pipeline (ADR-0012) · YouTube transcript ingest (ADR-0011) · generic transcript file ingest (.vtt/.srt/.txt) · ADRs as a first-class memory type (ADR-0009) · automated hook test suite (WP11 extended).
 
 ### 12.2 Open questions (remaining)
 
@@ -1400,6 +1438,15 @@ beyond Claude Code · team/multi-machine sync · auto hard-delete · hosted/SaaS
       resource.
 - [ ] `engram status` reports daemon healthy with plugin health for QMD,
       graphify, LLM.
+- [ ] **SC-27 (v2.3):** Read-only dashboard serves on `127.0.0.1:<port>` with bearer-token gate; lists memories with filters; semantic-search box returns recall results; knowledge-graph view renders the graphify graph via sigma.js. Auth: same bearer as MCP.
+- [ ] **SC-28 (v2.3):** A local PDF in `raw/` is ingested by `ingest.pdf` (MCP verb) into typed Markdown memories via `pdfplumber` extraction + dream-worker structuring. Provenance includes file path + page ranges per memory.
+- [ ] **SC-29 (v2.3):** A YouTube URL is ingested by `ingest.youtube` via `youtube-transcript-api`; transcript-text + per-segment timestamps land in typed memories with the URL + video id in `sources:`.
+- [ ] **SC-30 (v2.3):** A `.vtt` or `.srt` file is ingested by `ingest.transcript` and produces typed memories with per-cue timestamps in `sources:`.
+- [ ] **SC-31 (v2.3):** A new ADR written into a project's `adr/` directory is auto-ingested by the ADR `KbPlugin` and surfaces on `recall(track: "procedural")` with the Decision/Context/Consequences sections preserved.
+- [ ] **SC-32 (v2.3):** Hook test suite executes end-to-end: capture hook fires on a Claude Code session, observation lands in `staging/`, dream worker promotes to typed memory, and the test verifies the full chain — including failure-injection (filter blocks observation → AppLog records the drop, never silent).
+- [ ] **SC-33 (v2.3):** Dashboard degraded mode: when engramd is down, the dashboard returns a static "daemon unavailable" page with the last-known status; it does not silently break or expose an empty UI.
+- [ ] **SC-34 (v2.3):** YouTube fallback (`yt-dlp` + `whisper`) is gated by config `ingest.youtube.fallback_enabled: false` by default; opt-in produces identical memory shape to the primary path.
+- [ ] **SC-35 (v2.3):** `engram install --global` and `engram install --project <path>` are documented, idempotent, and produce a working `engramd` registration (systemd/launchd user unit) with bearer-token + scope-correct store location.
 
 ---
 
@@ -1434,6 +1481,15 @@ Not a plan — a sequencing preview that the plan skill will refine.
     documentation around public-remote risk.
 11. **E2E verification** — every §12.3 success criterion as an automated
     test.
+
+**v2.3 amendment (milestone v1.3 — `plans/engram/__active/2026-05-28-v1.3-ingest-formats-and-dashboard/`):**
+
+12. **PDF/book ingest** (WP18, ADR-0012) — `pdfplumber` extractor → chunker → dream-worker structuring → typed memories with file+page provenance.
+13. **YouTube transcript ingest** (WP19, ADR-0011) — `youtube-transcript-api` primary, `yt-dlp`+`whisper` fallback (config-gated).
+14. **Transcript file ingest** (WP20) — `.vtt`/`.srt`/`.txt` parser → typed memories with per-cue timestamps.
+15. **ADR-as-memory type** (WP21, ADR-0009) — strict schema, per-project `adr/` dir, recall surfaces in `procedural` track.
+16. **Read-only dashboard** (WP22, ADR-0010) — React + sigma.js, loopback-only, bearer-gated, no editing.
+17. **v1.3 E2E gate** (WP23) — every v2.3 SC verified end-to-end, hook test suite included.
 
 ---
 
@@ -1598,3 +1654,5 @@ v2.1 already says dreaming products carry `derived_from` backlinks (R-4). v2.2 p
 ---
 
 *SPEC v2.2 amendment complete. Folds ADR-0005…0008 and the inspiration survey at `docs/research/agentic-memory-survey-2026-05-27.md`. All v2.1 invariants hold. Living document — append decisions and findings here as v1.2 implementation hardens.*
+
+*SPEC v2.3 amendment complete (2026-05-28). Folds agentic-OS framing, v1 read-only dashboard (ADR-0010), PDF ingest (ADR-0012), YouTube transcript ingest (ADR-0011), ADR-as-memory type (ADR-0009), and hook test gate (WP11/WP23). All v2.2 invariants hold. New milestone v1.3 covers WP18–WP23.*
