@@ -24,6 +24,7 @@ Full per-repo notes live in the two draft files in `_drafts/`. This document is 
 | Repo | License | Why we looked |
 |---|---|---|
 | [Pratiyush/llm-wiki](https://github.com/Pratiyush/llm-wiki) | MIT | Session → static knowledge base; Markdown + wikilinks; closest analog to engram's `llm-wiki` KB type. |
+| [nashsu/llm_wiki](https://github.com/nashsu/llm_wiki) | (see repo) | Same LLM-wiki family as Pratiyush/llm-wiki — "compile knowledge once" pattern: incremental page merge, LanceDB hybrid BM25+vector search, sigma.js link-graph viz, format-agnostic ingest (PDF/web/YouTube), Chrome-extension capture. Direct influence on engram's read-only dashboard graph view (ADR-0010) and multi-format ingest (ADR-0011/0012). User-cited; cross-referenced here for attribution. |
 | [rohitg00/agentmemory](https://github.com/rohitg00/agentmemory) | Apache-2.0 | 4-tier memory + 12 hooks + 8 slash skills; closest analog to engram's hook+skill surface. |
 | [letta-ai/letta](https://github.com/letta-ai/letta) (formerly MemGPT) | Apache-2.0 | Production memory hierarchy (core/recall/archival); tool-mediated self-edit. |
 | [mem0ai/mem0](https://github.com/mem0ai/mem0) | Apache-2.0 | Two-phase extract-then-update memory ops; LongMemEval/LOCOMO benchmarks. |

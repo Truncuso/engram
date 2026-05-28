@@ -84,6 +84,11 @@ Short attribution:
 - **[Pratiyush/llm-wiki](https://github.com/Pratiyush/llm-wiki)** (MIT) —
   session → static Markdown wiki with wikilinks; informs engram's `llm-wiki`
   and `obsidian-vault` KB types.
+- **[nashsu/llm_wiki](https://github.com/nashsu/llm_wiki)** — the
+  "compile knowledge once" LLM-wiki pattern (incremental page merge, LanceDB
+  hybrid search, sigma.js graph viz, format-agnostic ingest); same family as
+  Pratiyush/llm-wiki and a direct influence on engram's read-only dashboard
+  graph view (ADR-0010) and multi-format ingest (ADR-0011/0012).
 - **[rohitg00/agentmemory](https://github.com/rohitg00/agentmemory)**
   (Apache-2.0) — 4-tier memory + 12 capture hooks + 8 slash skills; informs
   engram's hook/skill surface and seed skill set.
