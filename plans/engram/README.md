@@ -21,6 +21,7 @@ Lifecycle buckets (a plan lives in exactly one):
 |------|-------|---------|
 | [2026-05-26-v1-build](__active/2026-05-26-v1-build/OVERVIEW.md) | engram v1 — bottom-up build (WP00–WP12) | 2026-05-26 |
 | [2026-05-27-v1.2-multi-kb-and-skills](__active/2026-05-27-v1.2-multi-kb-and-skills/OVERVIEW.md) | engram v1.2 — multi-KB orchestration + skill subsystem (WP13–WP17, gated on v1 M2) | 2026-05-27 |
+| [2026-05-28-v1.3-ingest-formats-and-dashboard](__active/2026-05-28-v1.3-ingest-formats-and-dashboard/OVERVIEW.md) | engram v1.3 — multi-format ingest (PDF/YouTube/transcript) + read-only dashboard + ADR-as-memory (WP18–WP23) | 2026-05-28 |
 
 ## Completed
 

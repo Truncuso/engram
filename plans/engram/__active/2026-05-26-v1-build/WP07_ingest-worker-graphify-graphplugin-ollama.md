@@ -5,14 +5,14 @@ type: work-package
 stage: spec
 severity: MEDIUM
 created: 2026-05-26
-updated: 2026-05-26
+updated: 2026-05-28
 plan: 2026-05-26-v1-build
-tags: [ingest, graphify, ollama, worker, graph-plugin, path-jail, security]
+tags: [ingest, graphify, ollama, worker, graph-plugin, path-jail, security, hook-tests]
 relationships:
   - depends_on: [[wp02-plugin-host-llmplugin-vercel-ai-sdk]]
   - depends_on: [[wp05-mcp-server-coreservice-facade-16-verbs-bearer]]
   - blocks: [[wp08-dreaming-worker-orchestrator]]
-sources: [SRC-01]
+sources: [SRC-01, SRC-SPEC-v2.3-SC-32]
 ---
 <!-- Template: WP v2 (frontmatter-first) -->
 
@@ -43,6 +43,12 @@ unreachable (health check at job start).
 Security scope: `rawPath` path-jail (S-06, SPEC §8.4) and subprocess argument
 arrays never shell strings (S-16, SPEC §8.4) are both implemented here. These
 are the two HIGH mitigations whose home is this WP.
+
+**v2.3 cross-reference (SC-32):** this WP owns the hook test gate. The capture →
+staging → dream → recall chain, plus the filter-drop failure-injection case
+(§6.1: a blocked observation is logged, never silently dropped), are verified by
+`tests/integration/ingest-worker-hooks.test.ts` (W07-HOOK-1/2 below) and rolled
+into the v1.3 acceptance gate (WP23, `sc32-hooks.spec.ts`).
 
 ---
 
@@ -116,6 +122,8 @@ are the two HIGH mitigations whose home is this WP.
 | traverse neighbors | Call `GraphPlugin.traverse([memId], {mode: "neighbors"})` after extract | Returns `GraphResult` with neighbor node IDs | Integration test with live graphify MCP stdio subprocess |
 | Ollama unavailable | Start worker with Ollama not running | Job transitions to `FAILED` with error `plugin-unavailable`; no partial memory written | Integration test (mock Ollama port closed) |
 | ingestEdges non-fatal | `graphify update` exits non-zero | Plugin logs WARN, job does not fail, memory write already succeeded | Unit test with stubbed subprocess |
+| W07-HOOK-1 hook trace happy path | Capture hook fires on a simulated session → observation reaches `staging/` → dream worker promotes to typed memory → recall returns it | All 4 stages logged in AppLog in order; recall returns the planted memory | Integration test in `tests/integration/ingest-worker-hooks.test.ts` |
+| W07-HOOK-2 filter-drop failure injection | Privacy filter blocks an observation (§6.1) | AppLog records `capture.filter.drop` with reason; observation NOT silently lost; no memory created | Integration test |
 
 ---
 

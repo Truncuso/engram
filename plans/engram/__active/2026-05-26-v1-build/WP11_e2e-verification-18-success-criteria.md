@@ -5,9 +5,10 @@ type: work-package
 stage: ready
 severity: HIGH
 created: 2026-05-26
-updated: 2026-05-26
+updated: 2026-05-28
 plan: 2026-05-26-v1-build
 tags: [e2e, verification, success-criteria, integration, acceptance]
+related: [[wp23-v1-3-e2e-acceptance-gate]]
 relationships:
   - depends_on: [[wp04-scoring-engine-recall-degradation-chain]]
   - depends_on: [[wp05-mcp-server-coreservice-facade-16-verbs-bearer]]
@@ -29,6 +30,12 @@ constitute the v1 acceptance gate. Each criterion is verifiable by an automated
 test. This WP writes those tests as a final E2E suite that runs against a fully
 assembled system (daemon up, all plugins wired, real store on disk). The suite is
 the only gate that proves the system ships: **all 18 green**.
+
+**v2.3 extension:** v1.3 introduces SC-19 through SC-27 (dashboard, multi-format
+ingest, ADR-as-memory, hook test gate, install). Those are verified by WP23
+(`wp23-v1-3-e2e-acceptance-gate`) in the v1.3 milestone — not this WP. WP11
+remains scoped to the original 18 v1 success criteria; WP23 layers v1.3 on top
+with the same test infrastructure.
 
 No criterion is a unit test — each exercises a real engramd instance with real
 plugin calls. Tests that touch the dreaming worker or ingest worker use a test
